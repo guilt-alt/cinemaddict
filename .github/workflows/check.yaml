@@ -1,0 +1,36 @@
+name: Test and Merge
+
+on:
+  push:
+    branches: '*'
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Use Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: npm test
+
+    - name: Merge Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{secrets.GITHUB_TOKEN}}
+        branch: actions/checkout@v3
+        base: main
+        title: Auto PR
+        body: This is auto-created PR.
+        labels: report, automated pr
