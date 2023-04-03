@@ -30,7 +30,7 @@ jobs:
       with:
         token: ${{secrets.GITHUB_TOKEN}}
         branch: actions/checkout@v3
-        base: main
+        base: master
         title: Auto PR
         body: This is auto-created PR.
         labels: report, automated pr
