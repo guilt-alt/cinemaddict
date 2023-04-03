@@ -1,7 +1,7 @@
 name: Deploy
 
 on:
-  merge_group:
+  push:
     branches:
       - master
 
