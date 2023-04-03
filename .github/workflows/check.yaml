@@ -29,8 +29,9 @@ jobs:
       uses: peter-evans/create-pull-request@v3
       with:
         token: ${{secrets.GITHUB_TOKEN}}
-        branch: actions/checkout@-
+        branch: 'auto-pr-branch'
         base: master
         title: Auto PR
         body: This is auto-created PR.
         labels: report, automated pr
+        delete-branch: true
