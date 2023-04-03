@@ -20,25 +20,25 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans Regular'), local('OpenSans-Regular'), url('/assets/fonts/OpenSans-Regular.woff2') format('woff2');
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), url('./assets/fonts/OpenSans-Regular.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('/assets/fonts/OpenSans-Bold.woff2') format('woff2');
+  src: local('Open Sans Bold'), local('OpenSans-Bold'), url('./assets/fonts/OpenSans-Bold.woff2') format('woff2');
 }
 
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 800;
-  src: local('Open Sans ExtraBold'), local('OpenSans-ExtraBold'), url('/assets/fonts/OpenSans-ExtraBold.woff2') format('woff2');
+  src: local('Open Sans ExtraBold'), local('OpenSans-ExtraBold'), url('./assets/fonts/OpenSans-ExtraBold.woff2') format('woff2');
 }
 
 html {
-  background: #121213 url('/assets/images/background.png') no-repeat 60% 0;
+  background: #121213 url('./assets/images/background.png') no-repeat 60% 0;
   display: flex;
   color: var(--text-color);
   font-size: var(--font-size);
@@ -456,30 +456,30 @@ button {
 }
 
 .film-card__controls-item--add-to-watchlist {
-  background-image: url('/assets/images/icons/icon-watchlist.svg');
+  background-image: url('./assets/images/icons/icon-watchlist.svg');
   background-size: 17px 15px;
 }
 
 .film-card__controls-item--mark-as-watched {
-  background-image: url('/assets/images/icons/icon-watched.svg');
+  background-image: url('./assets/images/icons/icon-watched.svg');
   background-size: 14px 10px;
 }
 
 .film-card__controls-item--favorite {
-  background-image: url('/assets/images/icons/icon-favorite.svg');
+  background-image: url('./assets/images/icons/icon-favorite.svg');
   background-size: 18px 18px;
 }
 
 .film-card__controls-item--active.film-card__controls-item--add-to-watchlist {
-  background-image: url('/assets/images/icons/icon-watchlist-active.svg')
+  background-image: url('./assets/images/icons/icon-watchlist-active.svg')
 }
 
 .film-card__controls-item--active.film-card__controls-item--mark-as-watched {
-  background-image: url('/assets/images/icons/icon-watched-active.svg')
+  background-image: url('./assets/images/icons/icon-watched-active.svg')
 }
 
 .film-card__controls-item--active.film-card__controls-item--favorite {
-  background-image: url('/assets/images/icons/icon-favorite-active.svg')
+  background-image: url('./assets/images/icons/icon-favorite-active.svg')
 }
 
 
@@ -541,7 +541,7 @@ button {
 
 .footer {
   align-items: center;
-  background: url('/assets/images/background.png') no-repeat 50% 0;
+  background: url('./assets/images/background.png') no-repeat 50% 0;
   display: flex;
   height: 100px;
 }
@@ -770,18 +770,18 @@ button {
 }
 
 .film-details__control-label--watchlist::before {
-  background: url("/assets/images/icons/icon-watchlist.svg") no-repeat;
+  background: url("./assets/images/icons/icon-watchlist.svg") no-repeat;
   background-size: 17px 15px;
 }
 
 .film-details__control-label--watched::before {
-  background: url("/assets/images/icons/icon-watched.svg") no-repeat;
+  background: url("./assets/images/icons/icon-watched.svg") no-repeat;
   background-size: 17px 10px;
   top: 7px;
 }
 
 .film-details__control-label--favorite::before {
-  background: url("/assets/images/icons/icon-favorite.svg") no-repeat;
+  background: url("./assets/images/icons/icon-favorite.svg") no-repeat;
   background-size: 18px;
 }
 
@@ -790,15 +790,15 @@ button {
 }
 
 .film-details__control-input:checked + .film-details__control-label--watchlist::before {
-  background-image: url("/assets/images/icons/icon-watchlist-active.svg");
+  background-image: url("./assets/images/icons/icon-watchlist-active.svg");
 }
 
 .film-details__control-input:checked + .film-details__control-label--watched::before {
-  background-image: url("/assets/images/icons/icon-watched-active.svg");
+  background-image: url("./assets/images/icons/icon-watched-active.svg");
 }
 
 .film-details__control-input:checked + .film-details__control-label--favorite::before {
-  background-image: url("/assets/images/icons/icon-favorite-active.svg");
+  background-image: url("./assets/images/icons/icon-favorite-active.svg");
 }
 
 .film-details__comment {
@@ -1043,7 +1043,7 @@ button {
   width: 30px;
   height: 30px;
 
-  background-image: url('/assets/images/emoji/emoji-puke.png');
+  background-image: url('./assets/images/emoji/emoji-puke.png');
   background-size: 90%;
   background-position: center;
   background-repeat: no-repeat;
@@ -1059,7 +1059,7 @@ button {
   width: 30px;
   height: 30px;
 
-  background-image: url('/assets/images/emoji/emoji-trophy.png');
+  background-image: url('./assets/images/emoji/emoji-trophy.png');
   background-size: 90%;
   background-position: center;
   background-repeat: no-repeat;

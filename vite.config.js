@@ -15,16 +15,7 @@ const checkFileNames = ({ name }) => {
   return 'assets/[name]-[hash][extname]';
 }
 
-const aliasesList = [
-  { find: '@', replacement: resolve(__dirname, './src') },
-  { find: '@utils', replacement: resolve(__dirname, './src/js/utils') },
-  { find: '@mocks', replacement: resolve(__dirname, './src/js/mocks') },
-  { find: '@model', replacement: resolve(__dirname, './src/js/model') },
-  { find: '@view', replacement: resolve(__dirname, './src/js/view') },
-  { find: '@presenter', replacement: resolve(__dirname, './src/js/presenter') },
-];
-
-const aliasesListNew = {
+const aliasList = {
   '@': resolve(__dirname, './src'),
   '@utils': resolve(__dirname, './src/js/utils'),
   '@mocks': resolve(__dirname, './src/js/mocks'),
@@ -34,10 +25,11 @@ const aliasesListNew = {
 }
 
 export default {
-  root: resolve(__dirname, './src'),
-  publicDir: resolve(__dirname, './public'),
+  base: '/cinemaddict/',
+  root: resolve(__dirname, './src/'),
+  publicDir: resolve(__dirname, './public/'),
   build: {
-    outDir: resolve(__dirname, './cinemaddict'),
+    outDir: resolve(__dirname, './cinemaddict/'),
     modulePreload: false,
     rollupOptions: {
       output: {
@@ -50,9 +42,10 @@ export default {
     open: true
   },
   resolve: {
-    alias: aliasesListNew
+    alias: aliasList
   },
   plugins: [
+    eslint(),
     ViteImageOptimizer({
       jpg: {
         quality: 75

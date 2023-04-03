@@ -6,7 +6,7 @@ const createFilmCard = () => `<article class="film-card">
       <span class="film-card__duration">1h 55m</span>
       <span class="film-card__genre">Musical</span>
     </p>
-    <img src="/assets/images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
+    <img src="./assets/images/posters/the-dance-of-life.jpg" alt="" class="film-card__poster">
     <p class="film-card__description">Burlesque comic Ralph "Skid" Johnson (Skelly), and specialty dancer Bonny Lee King (Carroll), end up together on a cold, rainy night at a tr…</p>
     <a class="film-card__comments">5 comments</a>
     <div class="film-card__controls">
