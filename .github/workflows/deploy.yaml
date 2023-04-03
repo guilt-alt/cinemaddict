@@ -1,4 +1,4 @@
-name: Test and Merge
+name: Deploy
 
 on:
   merge_group:
