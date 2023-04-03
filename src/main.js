@@ -13,13 +13,12 @@ const EXTRA_FILMS_COUNT = 2;
 const films = (count) => new Array(count).fill('1');
 
 const render = (container, content, place, arr) => {
-
   if (arr === undefined) {
     return container.insertAdjacentHTML(place, content);
   }
 
-  return arr.forEach(el => container.insertAdjacentHTML(place, content));
-}
+  return arr.forEach((el) => container.insertAdjacentHTML(place, content) && el);
+};
 
 const headerElement = document.querySelector('.header');
 const mainElement = document.querySelector('.main');
