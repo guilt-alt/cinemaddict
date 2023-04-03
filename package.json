@@ -1,0 +1,24 @@
+{
+  "name": "cinemaddict",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite --host",
+    "build": "vite build --emptyOutDir",
+    "preview": "vite preview --host",
+    "test": "eslint --ext .js --ignore-path .gitignore ./src --fix"
+  },
+  "devDependencies": {
+    "eslint": "^8.37.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "sharp": "^0.32.0",
+    "svgo": "^3.0.2",
+    "vite": "^4.2.0"
+  },
+  "dependencies": {
+    "vite-plugin-eslint": "^1.8.1",
+    "vite-plugin-image-optimizer": "^1.1.2"
+  }
+}
