@@ -72,7 +72,7 @@ const createFilmDetails = () => `<section class="film-details">
           <ul class="film-details__comments-list">
             <li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="/cinemaddict/assets/images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+                <img src="/cinemaddict/assets/images/emoji/emoji-smile.png" width="55" height="55" alt="emoji-smile">
               </span>
               <div>
                 <p class="film-details__comment-text">Interesting setting and a good cast</p>
@@ -85,7 +85,7 @@ const createFilmDetails = () => `<section class="film-details">
             </li>
             <li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="/cinemaddict/assets/images/emoji/sleeping.png" width="55" height="55" alt="emoji-sleeping">
+                <img src="/cinemaddict/assets/images/emoji/emoji-sleeping.png" width="55" height="55" alt="emoji-sleeping">
               </span>
               <div>
                 <p class="film-details__comment-text">Booooooooooring</p>
@@ -98,7 +98,7 @@ const createFilmDetails = () => `<section class="film-details">
             </li>
             <li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="/cinemaddict/assets/images/emoji/puke.png" width="55" height="55" alt="emoji-puke">
+                <img src="/cinemaddict/assets/images/emoji/emoji-puke.png" width="55" height="55" alt="emoji-puke">
               </span>
               <div>
                 <p class="film-details__comment-text">Very very old. Meh</p>
@@ -111,7 +111,7 @@ const createFilmDetails = () => `<section class="film-details">
             </li>
             <li class="film-details__comment">
               <span class="film-details__comment-emoji">
-                <img src="/cinemaddict/assets/images/emoji/angry.png" width="55" height="55" alt="emoji-angry">
+                <img src="/cinemaddict/assets/images/emoji/emoji-angry.png" width="55" height="55" alt="emoji-angry">
               </span>
               <div>
                 <p class="film-details__comment-text">Almost two hours? Seriously?</p>
@@ -131,19 +131,19 @@ const createFilmDetails = () => `<section class="film-details">
             <div class="film-details__emoji-list">
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
               <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="/cinemaddict/assets/images/emoji/smile.png" width="30" height="30" alt="emoji">
+                <img src="/cinemaddict/assets/images/emoji/emoji-smile.png" width="30" height="30" alt="emoji">
               </label>
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
               <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="/cinemaddict/assets/images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+                <img src="/cinemaddict/assets/images/emoji/emoji-sleeping.png" width="30" height="30" alt="emoji">
               </label>
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
               <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="/cinemaddict/assets/images/emoji/puke.png" width="30" height="30" alt="emoji">
+                <img src="/cinemaddict/assets/images/emoji/emoji-puke.png" width="30" height="30" alt="emoji">
               </label>
               <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
               <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="/cinemaddict/assets/images/emoji/angry.png" width="30" height="30" alt="emoji">
+                <img src="/cinemaddict/assets/images/emoji/emoji-angry.png" width="30" height="30" alt="emoji">
               </label>
             </div>
           </div>
