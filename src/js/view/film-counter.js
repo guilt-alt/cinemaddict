@@ -1,3 +1,3 @@
-const createFilmCounter = () => '<p>0 movies inside</p>';
+const createFilmCounter = (count) => `<p>${count} movies inside</p>`;
 
 export default createFilmCounter;
