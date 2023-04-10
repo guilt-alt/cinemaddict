@@ -1,7 +1,7 @@
 const filmsToFilterMap = {
-  watchlist: (films) => films.filter((film) => film.isInWatchlist).length,
-  history: (films) => films.filter((film) => film.isWatched).length,
-  favorites: (films) => films.filter((film) => film.isFavorite).length,
+  watchlist: (films) => films.filter(({ userDetails: { isWatchlist } }) => isWatchlist).length,
+  history: (films) => films.filter(({ userDetails: { isWatched } }) => isWatched).length,
+  favorites: (films) => films.filter(({ userDetails: { isFavorite } }) => isFavorite).length,
 };
 
 const getCountByFilmsState = (films) => Object.entries(filmsToFilterMap)

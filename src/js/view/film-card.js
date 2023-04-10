@@ -1,11 +1,17 @@
-const createFilmCard = (film) => {
+import { createElement } from '@utils/render.js';
+
+const createFilmCard = ({
+  filmDetails, userDetails, id, comments,
+}) => {
   const {
-    poster, title, rating, year, duration, genres, description, comments,
-  } = film;
+    poster, title, rating, year, duration, genres, description,
+  } = filmDetails;
+
+  const { isWatchlist, isWatched, isFavorite } = userDetails;
 
   const descriptionShort = description.length > 140 ? `${description.slice(0, 139)}...` : description;
 
-  return `<article class="film-card">
+  return `<article class="film-card" data-id="${id}">
     <h3 class="film-card__title">${title}</h3>
     <p class="film-card__rating">${rating}</p>
     <p class="film-card__info">
@@ -17,11 +23,35 @@ const createFilmCard = (film) => {
     <p class="film-card__description">${descriptionShort}</p>
     <a class="film-card__comments">${comments.length} comments</a>
     <div class="film-card__controls">
-      <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
-      <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
-      <button class="film-card__controls-item button film-card__controls-item--favorite" type="button">Mark as favorite</button>
+      <button class="film-card__controls-item ${isWatchlist ? 'film-card__controls-item--active' : ''} button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
+      <button class="film-card__controls-item ${isWatched ? 'film-card__controls-item--active' : ''} button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>
+      <button class="film-card__controls-item ${isFavorite ? 'film-card__controls-item--active' : ''} button film-card__controls-item--favorite" type="button">Mark as favorite</button>
     </div>
   </article>`;
 };
 
-export default createFilmCard;
+export default class FilmCardView {
+  #data = null;
+
+  #element = null;
+
+  constructor(data) {
+    this.#data = data;
+  }
+
+  getTemplate() {
+    return createFilmCard(this.#data);
+  }
+
+  getElement() {
+    if (!this.#element) {
+      this.#element = createElement(this.getTemplate());
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
