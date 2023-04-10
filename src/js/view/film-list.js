@@ -1,3 +1,5 @@
+import { createElement } from '@utils/render.js';
+
 const createFilmList = () => `<section class="films">
   <section class="films-list">
     <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
@@ -16,4 +18,26 @@ const createFilmList = () => `<section class="films">
   </section>
 </section>`;
 
-export default createFilmList;
+export default class FilmListView {
+  #element = null;
+
+  constructor() {
+    this.createFilmList = createFilmList();
+  }
+
+  getTemplate() {
+    return this.createFilmList;
+  }
+
+  getElement() {
+    if (!this.#element) {
+      this.#element = createElement(this.getTemplate());
+    }
+
+    return this.#element;
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}

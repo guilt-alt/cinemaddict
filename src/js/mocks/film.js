@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid';
 import {
   cutArray, getRandomInt, getRandomItem, generateDate,
 } from '@utils/utils.js';
@@ -46,24 +47,29 @@ const descriptions = [
 ];
 
 const getFilmData = () => ({
-  poster: getRandomItem(posters),
-  title: getRandomItem(titles),
-  originalTitle: 'title',
-  rating: `${getRandomInt(2, 9)}.${getRandomInt(0, 9)}`,
-  producer: 'Michael Alan Spiller',
-  writers: 'Билл Лоуренс, Дэб Фордхэм, Дженей Баккен',
-  actors: 'Ken Jenkins, Sam Lloyd, Robert Maschio, Aloma Wright, John C. McGinley',
-  release: generateDate(),
-  year: getRandomInt(1929, 1964),
-  duration: `${getRandomInt(0, 1)}h ${getRandomInt(0, 60)}m`,
-  country: 'США',
-  genres: cutArray(genres),
-  description: cutArray(descriptions).join(' '),
-  ageRating: '16+',
-  comments: new Array(getRandomInt(0, 22)).fill('1'),
-  isInWatchlist: Boolean(getRandomInt(0, 1)),
-  isWatched: Boolean(getRandomInt(0, 1)),
-  isFavorite: Boolean(getRandomInt(0, 1)),
+  filmDetails: {
+    poster: getRandomItem(posters),
+    title: getRandomItem(titles),
+    originalTitle: 'Santa Claus Conquers The Martians',
+    rating: `${getRandomInt(2, 9)}.${getRandomInt(0, 9)}`,
+    director: 'Michael Alan Spiller',
+    writers: 'Билл Лоуренс, Дэб Фордхэм, Дженей Баккен',
+    actors: 'Ken Jenkins, Sam Lloyd, Robert Maschio, Aloma Wright, John C. McGinley',
+    release: generateDate(),
+    year: getRandomInt(1929, 1964),
+    duration: `${getRandomInt(0, 1)}h ${getRandomInt(0, 60)}m`,
+    country: 'США',
+    genres: cutArray(genres),
+    description: cutArray(descriptions).join(' '),
+    ageRating: '16+',
+  },
+  userDetails: {
+    isWatchlist: Boolean(getRandomInt(0, 1)),
+    isWatched: Boolean(getRandomInt(0, 1)),
+    isFavorite: Boolean(getRandomInt(0, 1)),
+  },
+  id: nanoid(),
+  comments: new Array(getRandomInt(0, 14)).fill().map(nanoid),
 });
 
 export default getFilmData;
