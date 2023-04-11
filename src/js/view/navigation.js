@@ -1,4 +1,4 @@
-import { createElement } from '@utils/render.js';
+import Abstract from '@view/abstract.js';
 
 const createMainNavigation = (filters) => {
   const links = filters.map(({ name, count }) => `<a href="#${name}" class="main-navigation__item">${name[0].toUpperCase() + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`).join('');
@@ -13,28 +13,15 @@ const createMainNavigation = (filters) => {
   </nav >`;
 };
 
-export default class MainNavigationView {
+export default class MainNavigationView extends Abstract {
   #data = null;
 
-  #element = null;
-
   constructor(data) {
+    super();
     this.#data = data;
   }
 
   getTemplate() {
     return createMainNavigation(this.#data);
-  }
-
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
