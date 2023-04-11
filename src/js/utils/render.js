@@ -1,25 +1,13 @@
-import Abstract from "@view/abstract.js";
+import Abstract from '@view/abstract.js';
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
 
-export const createElement = (template) => {
-  const newElement = document.createElement('div');
-  newElement.innerHTML = template;
-
-  return newElement.firstChild;
-};
-
-export const render = (container, child, place) => {
-  if (container instanceof Abstract) {
-    container = container.getElement();
-  }
-
-  if (child instanceof Abstract) {
-    child = child.getElement();
-  }
+export const render = (containerEl, childEl, place) => {
+  const container = containerEl instanceof Abstract ? containerEl.getElement() : containerEl;
+  const child = childEl instanceof Abstract ? childEl.getElement() : childEl;
 
   switch (place) {
     case RenderPosition.AFTERBEGIN:

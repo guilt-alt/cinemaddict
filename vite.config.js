@@ -65,7 +65,7 @@ export default {
     alias: aliasList
   },
   plugins: [
-    // eslint(),
+    eslint(),
     ViteImageOptimizer(imageOptimizer)
   ]
 }

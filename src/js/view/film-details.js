@@ -191,7 +191,7 @@ export default class FilmDetailsView extends Abstract {
   }
 
   setClickHandler(callback) {
-    this._callback.click = callback;
+    this.callback.click = callback;
     this.getElement().addEventListener('click', this.#clickHandler);
     document.addEventListener('keydown', this.#clickHandler);
   }
@@ -199,10 +199,10 @@ export default class FilmDetailsView extends Abstract {
   removeHandler = () => {
     this.getElement().removeEventListener('click', this.#clickHandler);
     document.removeEventListener('keydown', this.#clickHandler);
-  }
+  };
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click(evt);
-  }
+    this.callback.click(evt);
+  };
 }

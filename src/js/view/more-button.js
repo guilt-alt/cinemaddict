@@ -10,12 +10,12 @@ export default class MoreButtonView extends Abstarct {
   }
 
   setClickHandler(callback) {
-    this._callback.click = callback;
+    this.callback.click = callback;
     this.getElement().addEventListener('click', this.#clickHandler);
   }
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click();
-  }
+    this.callback.click();
+  };
 }

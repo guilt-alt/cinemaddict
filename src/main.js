@@ -52,7 +52,6 @@ const removeFilmDetails = (filmDetails) => (evt) => {
 };
 
 const showMoreFilms = (filmContainer, button) => () => {
-
   films
     .slice(renderFilmsCount, renderFilmsCount + FILMS_COUNT_PER_STEP)
     .forEach((film) => render(
@@ -77,9 +76,8 @@ const renderMoreButton = (container, filmContainer) => {
   moreButtonView.setClickHandler(showMoreFilmsHandler);
 };
 
-const openFilmDetailsHandler = function (evt) {
+const openFilmDetailsHandler = (evt) => {
   if (evt.target.matches('.film-card__title, .film-card__poster, .film-card__comments')) {
-
     const currentFilm = films.find(({ id }) => id === evt.target.parentNode.dataset.id);
     const filmDetails = new FilmDetailsView(currentFilm);
 

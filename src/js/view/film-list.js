@@ -34,13 +34,13 @@ export default class FilmListView extends Abstract {
 
   setClickHandler(callback) {
     if (this.#data) {
-      this._callback.click = callback;
+      this.callback.click = callback;
       this.getElement().addEventListener('click', this.#clickHandler);
     }
   }
 
   #clickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.click(evt);
-  }
+    this.callback.click(evt);
+  };
 }

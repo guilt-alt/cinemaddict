@@ -1,8 +1,9 @@
-import { createElement } from '@utils/render.js';
-
 export default class Abstract {
   #element = null;
-  _callback = {};
+
+  #newElement = null;
+
+  callback = {};
 
   #templateError = new Error('Abstract method not implemented: getTemplate');
 
@@ -18,7 +19,7 @@ export default class Abstract {
 
   getElement() {
     if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
+      this.#element = this.#createElement(this.getTemplate());
     }
 
     return this.#element;
@@ -26,5 +27,12 @@ export default class Abstract {
 
   removeElement() {
     this.#element = null;
+  }
+
+  #createElement(template) {
+    this.#newElement = document.createElement('div');
+    this.#newElement.innerHTML = template;
+
+    return this.#newElement.firstChild;
   }
 }
