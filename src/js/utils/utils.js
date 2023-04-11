@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-export const onEscKeyDown = (evt) => (evt.key === 'Escape');
+export const onEscKeyDown = (evt) => (evt.key === 'Escape' || evt.key === 'Esc');
 
 export const getRandomInt = (min, max) => {
   const minInt = Math.ceil(min);

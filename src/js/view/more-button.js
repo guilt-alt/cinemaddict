@@ -1,27 +1,21 @@
-import { createElement } from '@utils/render.js';
+import Abstarct from '@view/abstract.js';
 
 const createMoreButton = () => '<button class="films-list__show-more" type="button">Show more</button>';
 
-export default class MoreButtonView {
-  #element = null;
-
-  constructor() {
-    this.createMoreButton = createMoreButton();
-  }
+export default class MoreButtonView extends Abstarct {
+  #createMoreButton = createMoreButton();
 
   getTemplate() {
-    return this.createMoreButton;
+    return this.#createMoreButton;
   }
 
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this.#clickHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click();
   }
 }

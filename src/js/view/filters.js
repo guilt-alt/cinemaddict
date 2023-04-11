@@ -1,4 +1,4 @@
-import { createElement } from '@utils/render.js';
+import Abstract from '@view/abstract.js';
 
 const createFilters = () => `<ul class="sort">
   <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
@@ -6,26 +6,10 @@ const createFilters = () => `<ul class="sort">
   <li><a href="#" class="sort__button">Sort by rating</a></li>
 </ul>`;
 
-export default class FiltersView {
-  #element = null;
-
-  constructor() {
-    this.createFilters = createFilters();
-  }
+export default class FiltersView extends Abstract {
+  #createFilters = createFilters();
 
   getTemplate() {
-    return this.createFilters;
-  }
-
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return this.#createFilters;
   }
 }

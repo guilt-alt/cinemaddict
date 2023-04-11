@@ -1,4 +1,4 @@
-import { createElement } from '@utils/render.js';
+import Abstract from '@view/abstract.js';
 
 const createFilmDetails = ({ filmDetails, userDetails }) => {
   const {
@@ -178,12 +178,11 @@ const createFilmDetails = ({ filmDetails, userDetails }) => {
   </section>`;
 };
 
-export default class FilmDetailsView {
+export default class FilmDetailsView extends Abstract {
   #data = null;
 
-  #element = null;
-
   constructor(data) {
+    super();
     this.#data = data;
   }
 
@@ -191,15 +190,19 @@ export default class FilmDetailsView {
     return createFilmDetails(this.#data);
   }
 
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
-    }
-
-    return this.#element;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().addEventListener('click', this.#clickHandler);
+    document.addEventListener('keydown', this.#clickHandler);
   }
 
-  removeElement() {
-    this.#element = null;
+  removeHandler = () => {
+    this.getElement().removeEventListener('click', this.#clickHandler);
+    document.removeEventListener('keydown', this.#clickHandler);
+  }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 }

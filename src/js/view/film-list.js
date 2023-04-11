@@ -1,4 +1,4 @@
-import { createElement } from '@utils/render.js';
+import Abstract from '@view/abstract.js';
 
 const createFilmList = (data) => {
   const noData = '<h2 class="films-list__title">There are no movies in our database</h2>';
@@ -20,12 +20,11 @@ const createFilmList = (data) => {
   return `<section class="films">${data ? lists : noData}</section >`;
 };
 
-export default class FilmListView {
+export default class FilmListView extends Abstract {
   #data = null;
 
-  #element = null;
-
   constructor(data) {
+    super();
     this.#data = data;
   }
 
@@ -33,15 +32,15 @@ export default class FilmListView {
     return createFilmList(this.#data);
   }
 
-  getElement() {
-    if (!this.#element) {
-      this.#element = createElement(this.getTemplate());
+  setClickHandler(callback) {
+    if (this.#data) {
+      this._callback.click = callback;
+      this.getElement().addEventListener('click', this.#clickHandler);
     }
-
-    return this.#element;
   }
 
-  removeElement() {
-    this.#element = null;
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.click(evt);
   }
 }
