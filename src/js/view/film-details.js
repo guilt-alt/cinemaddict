@@ -1,4 +1,5 @@
 import Abstract from '@view/abstract.js';
+import { onEscKeyDown } from '@utils/utils.js';
 
 const createFilmDetails = ({ filmDetails, userDetails }) => {
   const {
@@ -10,7 +11,7 @@ const createFilmDetails = ({ filmDetails, userDetails }) => {
     isWatchlist, isWatched, isFavorite,
   } = userDetails;
 
-  const createGenres = genres.map((genre) => `<span class="film-details__genre">${genre},</span>`).join('');
+  const createGenres = genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join('');
 
   // const createComments = comments.map(
   // ({ text, emotion, author, date }) => `<li class="film-details__comment">
@@ -190,19 +191,57 @@ export default class FilmDetailsView extends Abstract {
     return createFilmDetails(this.#data);
   }
 
-  setClickHandler(callback) {
-    this.callback.click = callback;
-    this.getElement().addEventListener('click', this.#clickHandler);
-    document.addEventListener('keydown', this.#clickHandler);
+  removeDocumentHandler() {
+    document.removeEventListener('keydown', this.#closeDetailsHandler);
   }
 
-  removeHandler = () => {
-    this.getElement().removeEventListener('click', this.#clickHandler);
-    document.removeEventListener('keydown', this.#clickHandler);
+  set clickWatchlistHandler(callback) {
+    this.callback.watchlist = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--watchlist')
+      .addEventListener('click', this.#clickWatchlistHandler);
+  }
+
+  set clickWatchedHandler(callback) {
+    this.callback.watched = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--watched')
+      .addEventListener('click', this.#clickWatchedHandler);
+  }
+
+  set clickFavoriteHandler(callback) {
+    this.callback.favorite = callback;
+    this.getElement()
+      .querySelector('.film-details__control-label--favorite')
+      .addEventListener('click', this.#clickFavoriteHandler);
+  }
+
+  set closeDetailsHandler(callback) {
+    this.callback.close = callback;
+
+    document.addEventListener('keydown', this.#closeDetailsHandler);
+    this.getElement().addEventListener('click', this.#closeDetailsHandler);
+  }
+
+  #clickWatchlistHandler = (evt) => {
+    evt.preventDefault();
+    this.callback.watchlist(evt);
   };
 
-  #clickHandler = (evt) => {
+  #clickWatchedHandler = (evt) => {
     evt.preventDefault();
-    this.callback.click(evt);
+    this.callback.watched(evt);
+  };
+
+  #clickFavoriteHandler = (evt) => {
+    evt.preventDefault();
+    this.callback.favorite(evt);
+  };
+
+  #closeDetailsHandler = (evt) => {
+    if (onEscKeyDown(evt) || evt.target.matches('.film-details__close-btn')) {
+      evt.preventDefault();
+      this.callback.close();
+    }
   };
 }
