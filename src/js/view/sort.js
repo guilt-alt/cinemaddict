@@ -1,15 +1,15 @@
 import Abstract from '@view/abstract.js';
 
-const createFilters = () => `<ul class="sort">
+const createSort = () => `<ul class="sort">
   <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
   <li><a href="#" class="sort__button">Sort by date</a></li>
   <li><a href="#" class="sort__button">Sort by rating</a></li>
 </ul>`;
 
-export default class FiltersView extends Abstract {
-  #createFilters = createFilters();
+export default class SortView extends Abstract {
+  #createSort = createSort();
 
   getTemplate() {
-    return this.#createFilters;
+    return this.#createSort;
   }
 }

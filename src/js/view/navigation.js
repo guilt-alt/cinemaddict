@@ -1,6 +1,6 @@
 import Abstract from '@view/abstract.js';
 
-const createMainNavigation = (filters) => {
+const createNavigation = (filters) => {
   const links = filters.map(({ name, count }) => `<a href="#${name}" class="main-navigation__item">${name[0].toUpperCase() + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`).join('');
 
   return `<nav class="main-navigation">
@@ -13,7 +13,7 @@ const createMainNavigation = (filters) => {
   </nav >`;
 };
 
-export default class MainNavigationView extends Abstract {
+export default class NavigationView extends Abstract {
   #data = null;
 
   constructor(data) {
@@ -22,6 +22,6 @@ export default class MainNavigationView extends Abstract {
   }
 
   getTemplate() {
-    return createMainNavigation(this.#data);
+    return createNavigation(this.#data);
   }
 }
