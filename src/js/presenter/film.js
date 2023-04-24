@@ -146,4 +146,8 @@ export default class Film {
 
     document.body.classList.remove('hide-overflow');
   };
+
+  destroy() {
+    remove(this.#filmComponent);
+  }
 }
