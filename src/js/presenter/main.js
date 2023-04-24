@@ -9,12 +9,14 @@ import FilmPresenter from '@presenter/film.js';
 
 import { updateItem } from '@utils/utils.js';
 import getCountByFilmsState from '@utils/filters.js';
-import { FILMS_COUNT_PER_STEP, EXTRA_FILMS_COUNT } from '@utils/const.js';
+import { FILMS_COUNT_PER_STEP, EXTRA_FILMS_COUNT, SortType } from '@utils/const.js';
 import { render, RenderPosition, remove } from '@utils/render.js';
 
-import { getMostRatedFilms, getMostCommentedFilms } from '@utils/extra-films.js';
+import { sortByDate, sortByRating, sortByComments } from '@utils/sort.js';
 
 export default class Main {
+  #currentSortType = SortType.DEFAULT;
+
   #sortView = new SortView();
 
   #filmListView = new FilmListView();
@@ -24,6 +26,8 @@ export default class Main {
   #moreButtonView = new MoreButtonView();
 
   #films = [];
+
+  #sourcedFilms = [];
 
   #mode = null;
 
@@ -41,6 +45,7 @@ export default class Main {
 
   constructor(data) {
     this.#films = data.slice();
+    this.#sourcedFilms = data.slice();
   }
 
   init() {
@@ -70,6 +75,23 @@ export default class Main {
 
   #renderSort() {
     render(this.#mainElement, this.#sortView, RenderPosition.BEFOREEND);
+    this.#sortView.changeSortHandler = this.#handleSortChange;
+  }
+
+  #sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this.#films.sort(sortByDate);
+        break;
+      case SortType.RATING:
+        this.#films.sort(sortByRating);
+        break;
+      default:
+        this.#films = this.#sourcedFilms;
+        break;
+    }
+
+    this.#currentSortType = sortType;
   }
 
   #renderList() {
@@ -97,13 +119,20 @@ export default class Main {
   }
 
   #renderExtraFilms(from = 0, to = Math.min(this.#films.length, EXTRA_FILMS_COUNT)) {
-    const mostRated = getMostRatedFilms(this.#films);
-    const mostCommented = getMostCommentedFilms(this.#films);
+    const mostRated = this.#films.slice().sort(sortByRating);
+    const mostCommented = this.#films.slice().sort(sortByComments);
 
     mostRated.slice(from, to)
       .forEach((film) => this.#renderFilm(this.#filmRatedElement, film));
     mostCommented.slice(from, to)
       .forEach((film) => this.#renderFilm(this.#filmCommentedElement, film));
+  }
+
+  #destroyFilms() {
+    this.#filmPresenter.forEach((value) => value.forEach((film) => film.destroy()));
+    this.#filmPresenter.clear();
+    this.#renderFilmsCount = FILMS_COUNT_PER_STEP;
+    remove(this.#moreButtonView);
   }
 
   #renderMoreButton() {
@@ -121,6 +150,18 @@ export default class Main {
     if (this.#renderFilmsCount >= this.#films.length) {
       remove(this.#moreButtonView);
     }
+  };
+
+  #handleSortChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#sortFilms(sortType);
+    this.#destroyFilms();
+    this.#renderFilms();
+    this.#renderExtraFilms();
+    this.#renderMoreButton();
   };
 
   #handleModeChange = (mode = this.#mode) => {

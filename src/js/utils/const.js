@@ -6,3 +6,9 @@ export const Mode = {
   OPEN: 'open',
   CLOSE: 'close',
 };
+
+export const SortType = {
+  DEFAULT: 'default',
+  DATE: 'date',
+  RATING: 'rating',
+};
