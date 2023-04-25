@@ -1,7 +1,28 @@
-import Abstract from '@view/abstract.js';
+import Smart from '@view/smart.js';
 import { onEscKeyDown } from '@utils/utils.js';
+import { EMOTIONS } from '@utils/const.js';
 
-const createFilmDetails = ({ filmDetails, userDetails }) => {
+const createCommentEmoji = (emotion) => (emotion ? `<img src="/cinemaddict/assets/images/emoji/emoji-${emotion}.png" width="55" height="55" alt="emoji-${emotion}">` : '');
+
+const createEmotionInputsList = (checkedEmotion) => EMOTIONS.map((emotion) => `<input class="film-details__emoji-item visually-hidden" name="comment-emoji"
+      type="radio" id="emoji-${emotion}" value="${emotion}" ${emotion === checkedEmotion ? 'checked' : ''}>
+    <label class="film-details__emoji-label" for="emoji-${emotion}">
+      <img src="/cinemaddict/assets/images/emoji/emoji-${emotion}.png" width="30" height="30" alt="${emotion}">
+    </label>`).join('');
+
+const createNewCommentForm = (emotionTemplate, comment, checkedEmotion) => `<div class="film-details__new-comment">
+  <div class="film-details__add-emoji-label">
+    ${emotionTemplate || ''}
+  </div>
+  <label class="film-details__comment-label">
+    <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comment || ''}</textarea>
+  </label>
+  <div class="film-details__emoji-list">
+    ${createEmotionInputsList(checkedEmotion)}
+  </div>
+</div>`;
+
+const createFilmDetails = ({ filmDetails, userDetails }, emojiElement, comment, checkedEmotion) => {
   const {
     poster, title, originalTitle, rating, director, writers,
     actors, release, duration, country, genres, description, ageRating,
@@ -27,6 +48,8 @@ const createFilmDetails = ({ filmDetails, userDetails }) => {
   //         </p>
   //       </div>
   //     </li>`).join(``);
+
+  const newCommentForm = createNewCommentForm(emojiElement, comment, checkedEmotion);
 
   return `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -149,50 +172,46 @@ const createFilmDetails = ({ filmDetails, userDetails }) => {
               </div>
             </li>
           </ul>
-          <div class="film-details__new-comment">
-            <div class="film-details__add-emoji-label"></div>
-            <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-            </label>
-            <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-              <label class="film-details__emoji-label" for="emoji-smile">
-                <img src="/cinemaddict/assets/images/emoji/emoji-smile.png" width="30" height="30" alt="emoji">
-              </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-              <label class="film-details__emoji-label" for="emoji-sleeping">
-                <img src="/cinemaddict/assets/images/emoji/emoji-sleeping.png" width="30" height="30" alt="emoji">
-              </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-              <label class="film-details__emoji-label" for="emoji-puke">
-                <img src="/cinemaddict/assets/images/emoji/emoji-puke.png" width="30" height="30" alt="emoji">
-              </label>
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-              <label class="film-details__emoji-label" for="emoji-angry">
-                <img src="/cinemaddict/assets/images/emoji/emoji-angry.png" width="30" height="30" alt="emoji">
-              </label>
-            </div>
-          </div>
+          ${newCommentForm}
         </section>
       </div>
     </form>
   </section>`;
 };
 
-export default class FilmDetailsView extends Abstract {
+export default class FilmDetailsView extends Smart {
   #data = null;
+
+  #scroll = 0;
+
+  #emoji = null;
+
+  #emojiElement = null;
+
+  #comment = null;
 
   constructor(data) {
     super();
     this.#data = data;
+
+    this.#setInnerHandlers();
   }
 
   getTemplate() {
-    return createFilmDetails(this.#data);
+    return createFilmDetails(this.#data, this.#emojiElement, this.#comment, this.#emoji);
   }
 
   removeDocumentHandler() {
     document.removeEventListener('keydown', this.#closeDetailsHandler);
+  }
+
+  restoreHandlers() {
+    this.clickWatchlistHandler = this.callback.watchlist;
+    this.clickFavoriteHandler = this.callback.favorite;
+    this.clickWatchedHandler = this.callback.watched;
+
+    this.#setInnerHandlers();
+    this.#setScrollPosition();
   }
 
   set clickWatchlistHandler(callback) {
@@ -223,18 +242,36 @@ export default class FilmDetailsView extends Abstract {
     this.getElement().addEventListener('click', this.#closeDetailsHandler);
   }
 
+  #getScrollPosition() {
+    this.#scroll = this.getElement().scrollTop;
+  }
+
+  #setScrollPosition() {
+    this.getElement().scrollTop = this.#scroll;
+  }
+
+  #setInnerHandlers() {
+    this.getElement().querySelector('.film-details__comment-input')
+      .addEventListener('input', this.#inputCommentHandler);
+    this.getElement().querySelector('.film-details__emoji-list')
+      .addEventListener('change', this.#changeEmojiHandler);
+  }
+
   #clickWatchlistHandler = (evt) => {
     evt.preventDefault();
+    this.#setScrollPosition();
     this.callback.watchlist(evt);
   };
 
   #clickWatchedHandler = (evt) => {
     evt.preventDefault();
+    this.#setScrollPosition();
     this.callback.watched(evt);
   };
 
   #clickFavoriteHandler = (evt) => {
     evt.preventDefault();
+    this.#setScrollPosition();
     this.callback.favorite(evt);
   };
 
@@ -243,5 +280,17 @@ export default class FilmDetailsView extends Abstract {
       evt.preventDefault();
       this.callback.close();
     }
+  };
+
+  #changeEmojiHandler = (evt) => {
+    this.#emojiElement = createCommentEmoji(evt.target.value);
+    this.#emoji = evt.target.value;
+
+    this.#getScrollPosition();
+    this.updateElement();
+  };
+
+  #inputCommentHandler = (evt) => {
+    this.#comment = evt.target.value;
   };
 }
