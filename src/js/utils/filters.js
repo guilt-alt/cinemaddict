@@ -1,13 +1,12 @@
-const filmsToFilterMap = {
-  watchlist: (films) => films.filter(({ userDetails: { isWatchlist } }) => isWatchlist).length,
-  history: (films) => films.filter(({ userDetails: { isWatched } }) => isWatched).length,
-  favorites: (films) => films.filter(({ userDetails: { isFavorite } }) => isFavorite).length,
+import { FilterType } from '@utils/const.js';
+
+export default {
+  [FilterType.ALL]: (films) => films
+    .filter((film) => film),
+  [FilterType.WATCHLIST]: (films) => films
+    .filter(({ userDetails: { isWatchlist } }) => isWatchlist),
+  [FilterType.WATCHED]: (films) => films
+    .filter(({ userDetails: { isWatched } }) => isWatched),
+  [FilterType.FAVORITES]: (films) => films
+    .filter(({ userDetails: { isFavorite } }) => isFavorite),
 };
-
-const getCountByFilmsState = (films) => Object.entries(filmsToFilterMap)
-  .map(([filterName, countFilms]) => ({
-    name: filterName,
-    count: countFilms(films),
-  }));
-
-export default getCountByFilmsState;

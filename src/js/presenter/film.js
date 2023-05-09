@@ -1,7 +1,7 @@
 import FilmCardView from '@view/film-card.js';
 import FilmDetailsView from '@view/film-details.js';
 
-import { Mode } from '@utils/const.js';
+import { UserAction, UpdateType, Mode } from '@utils/const.js';
 import {
   render, RenderPosition, replace, remove,
 } from '@utils/render.js';
@@ -93,6 +93,8 @@ export default class Film {
 
   #handleWatchlistClick = () => {
     this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails: {
@@ -105,6 +107,8 @@ export default class Film {
 
   #handleWatchedClick = () => {
     this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails: {
@@ -117,6 +121,8 @@ export default class Film {
 
   #handleFavotiteClick = () => {
     this.#changeData(
+      UserAction.UPDATE_FILM,
+      UpdateType.MINOR,
       {
         ...this.#film,
         userDetails: {
