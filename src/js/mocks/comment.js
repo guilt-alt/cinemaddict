@@ -1,4 +1,4 @@
-import { getRandomInt, getRandomItem, generateDate } from '@utils/utils.js';
+import { getRandomItem, generateDate } from '@utils/utils.js';
 
 const comments = [
   'Booooooooooring',
@@ -21,8 +21,8 @@ const authors = [
   'Michael Random',
 ];
 
-const comment = () => ({
-  id: getRandomInt(0, 22),
+const comment = (id) => ({
+  id,
   text: getRandomItem(comments),
   emotion: getRandomItem(emotions),
   author: getRandomItem(authors),

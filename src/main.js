@@ -5,10 +5,18 @@ import getFilmData from '@mocks/film.js';
 import { FILMS_COUNT } from '@utils/const.js';
 import { render, RenderPosition } from '@utils/render.js';
 
-import MainPresenter from '@presenter/main.js';
+import FiltersModel from '@model/filters.js';
+import FilmsModel from '@model/films.js';
+
+import BoardPresenter from '@presenter/board.js';
+import FilterPresenter from '@presenter/filter.js';
 
 const films = new Array(FILMS_COUNT).fill().map(getFilmData) ?? [];
-const mainPresenter = new MainPresenter(films);
+
+const filtersModel = new FiltersModel();
+const filmsModel = new FilmsModel();
+
+filmsModel.films = films;
 
 const renderHeader = () => {
   const headerElement = document.querySelector('.header');
@@ -20,7 +28,8 @@ const renderHeader = () => {
   );
 };
 
-mainPresenter.init();
+const filterPresenter = new FilterPresenter(document.querySelector('main'), filtersModel, filmsModel);
+const boardPresenter = new BoardPresenter(filtersModel, filmsModel);
 
 const renderStats = () => {
   const footerStatsElement = document.querySelector('.footer__statistics');
@@ -32,4 +41,6 @@ const renderStats = () => {
 };
 
 renderHeader();
+filterPresenter.init();
+boardPresenter.init();
 renderStats();
