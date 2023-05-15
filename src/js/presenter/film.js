@@ -9,8 +9,6 @@ import {
 export default class Film {
   #film = null;
 
-  #mode = Mode.CLOSE;
-
   #filmComponent = null;
 
   #filmDetails = null;
@@ -18,6 +16,8 @@ export default class Film {
   #changeData = null;
 
   #changeMode = null;
+
+  #mode = Mode.CLOSE;
 
   constructor(changeData, changeMode) {
     this.#changeData = changeData;

@@ -1,5 +1,4 @@
 import { resolve } from 'path';
-import eslint from 'vite-plugin-eslint';
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 
 const checkFileNames = ({ name }) => {
@@ -65,7 +64,6 @@ export default {
     alias: aliasList
   },
   plugins: [
-    // eslint(),
     ViteImageOptimizer(imageOptimizer)
   ]
 }

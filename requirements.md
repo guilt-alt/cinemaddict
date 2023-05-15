@@ -10,19 +10,19 @@ npm i eslint@7.13.0 -DE
 
 ## Зависимости приложения (`dependencies`)
 
+* he
 * dayjs
 * nanoid
-* flatpickr
-* he
 * chartjs
 * chartjs-plugin-datalabels
 
 ## Зависимости для разработки (`devDependencies`)
 
-* eslint@7.13.0
-* eslint-config-htmlacademy@0.6.0
-* webpack@4.44.2
-* webpack-cli@3.3.12
-* webpack-dev-server@3.11.0
-* css-loader@5.0.1
+* eslint@8.37.0
+* eslint-config-airbnb@19.0.4
+* eslint-import-resolver-alias@1.1.2
+* vite@4.2.1
+* vite-plugin-image-optimizer@1.1.2
+* sharp@0.32.0
+* svgo@3.0.2
 * style-loader@2.0.0

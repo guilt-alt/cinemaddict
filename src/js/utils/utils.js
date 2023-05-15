@@ -12,9 +12,16 @@ export const getRandomInt = (min, max) => {
 export const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 export const generateDate = () => {
-  const maxDayGap = 7; const
-    daysGap = getRandomInt(-maxDayGap, maxDayGap);
+  const maxDayGap = 7;
+  const daysGap = getRandomInt(-maxDayGap, maxDayGap);
 
+  return dayjs().add(daysGap, 'day').format('DD MMMM YYYY');
+};
+
+export const generateWatchingDate = () => {
+  const minDayGap = 0;
+  const maxDayGap = -365;
+  const daysGap = getRandomInt(minDayGap, maxDayGap);
   return dayjs().add(daysGap, 'day').format('DD MMMM YYYY');
 };
 

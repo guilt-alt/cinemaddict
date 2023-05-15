@@ -6,7 +6,7 @@ export default class Observer {
   }
 
   removeObserver(observer) {
-    this.#observers = this.#observers.filter((existedObserver) => existedObserver !== observer);
+    this.#observers.delete(observer);
   }
 
   notify(event, payload) {

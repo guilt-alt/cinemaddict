@@ -10,15 +10,14 @@ import FilmPresenter from '@presenter/film.js';
 
 import filter from '@utils/filters.js';
 import {
-  FILMS_COUNT_PER_STEP, EXTRA_FILMS_COUNT, SortType, FilterType, UpdateType, UserAction,
+  FILMS_COUNT_PER_STEP, EXTRA_FILMS_COUNT,
+  SortType, FilterType, UpdateType, UserAction,
 } from '@utils/const.js';
 import { render, RenderPosition, remove } from '@utils/render.js';
 
 import { sortByDate, sortByRating, sortByComments } from '@utils/sort.js';
 
 export default class Board {
-  #currentSortType = SortType.DEFAULT;
-
   #filmListView = new FilmListView();
 
   #filmListRatedView = new FilmListRatedView();
@@ -29,13 +28,15 @@ export default class Board {
 
   #moreButtonView = new MoreButtonView();
 
+  #sortView = null;
+
+  #mainElement = null;
+
   #mode = null;
 
   #filmsModel = null;
 
   #filtersModel = null;
-
-  #sortView = null;
 
   #filmPresenter = new Map();
 
@@ -43,24 +44,34 @@ export default class Board {
 
   #filmPresenterCommented = new Map();
 
+  #currentSortType = SortType.DEFAULT;
+
   #renderFilmsCount = FILMS_COUNT_PER_STEP;
 
-  #mainElement = document.querySelector('main');
-
-  constructor(filtersModel, filmsModel) {
+  constructor(mainElement, filtersModel, filmsModel) {
+    this.#mainElement = mainElement;
     this.#filmsModel = filmsModel;
     this.#filtersModel = filtersModel;
-
-    this.#filmsModel.addObserver(this.#handleModelEvent);
-    this.#filtersModel.addObserver(this.#handleModelEvent);
   }
 
   init() {
+    this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#filtersModel.addObserver(this.#handleModelEvent);
+
     this.#renderBoard();
   }
 
+  destroy() {
+    this.#clearBoard({ resetRenderFilmsCount: true, resetSortType: true, resetFilmsExtra: true });
+
+    remove(this.#filmListView);
+
+    this.#filmsModel.removeObserver(this.#handleModelEvent);
+    this.#filtersModel.removeObserver(this.#handleModelEvent);
+  }
+
   #getFilms() {
-    const filterType = this.#filtersModel.filter;
+    const filterType = this.#filtersModel.filter ?? FilterType.ALL;
     const { films } = this.#filmsModel;
     const filtredFilms = filter[filterType](films);
 

@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
 import {
-  cutArray, getRandomInt, getRandomItem, generateDate,
+  cutArray, getRandomInt, getRandomItem, generateDate, generateWatchingDate,
 } from '@utils/utils.js';
 
 const posters = [
@@ -57,7 +57,7 @@ const getFilmData = () => ({
     actors: 'Ken Jenkins, Sam Lloyd, Robert Maschio, Aloma Wright, John C. McGinley',
     release: generateDate(),
     year: getRandomInt(1929, 1964),
-    duration: `${getRandomInt(0, 1)}h ${getRandomInt(0, 60)}m`,
+    duration: getRandomInt(200, 1880),
     country: 'США',
     genres: cutArray(genres),
     description: cutArray(descriptions).join(' '),
@@ -67,6 +67,7 @@ const getFilmData = () => ({
     isWatchlist: Boolean(getRandomInt(0, 1)),
     isWatched: Boolean(getRandomInt(0, 1)),
     isFavorite: Boolean(getRandomInt(0, 1)),
+    date: generateWatchingDate(),
   },
   id: nanoid(),
   comments: new Array(getRandomInt(0, 14)).fill().map(nanoid),
