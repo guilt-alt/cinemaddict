@@ -2,22 +2,29 @@ import FiltersView from '@view/filters.js';
 import {
   render, RenderPosition, replace, remove,
 } from '@utils/render.js';
-import { FilterType, UpdateType } from '@utils/const.js';
+import { MenuItem, FilterType, UpdateType } from '@utils/const.js';
 import filter from '@utils/filters.js';
 
 export default class Filter {
-  #filterContainer = null;
-
-  #filtersModel = null;
-
-  #filmsModel = null;
-
-  #currentFilter = null;
+  #mainElement = null;
 
   #filterComponent = null;
 
-  constructor(filterContainer, filtersModel, filmsModel) {
-    this.#filterContainer = filterContainer;
+  #filmsModel = null;
+
+  #filtersModel = null;
+
+  #boardPresenter = null;
+
+  #statsPresenter = null;
+
+  #currentFilter = null;
+
+  #currentMenuItem = MenuItem.FILMS;
+
+  constructor(mainElement, filtersModel, filmsModel) {
+    this.#mainElement = mainElement;
+
     this.#filtersModel = filtersModel;
     this.#filmsModel = filmsModel;
 
@@ -32,10 +39,11 @@ export default class Filter {
     const prevFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new FiltersView(filters, this.#currentFilter);
+    this.#filterComponent.menuClickHandler = this.#handleMenuClick;
     this.#filterComponent.filterChangeHandler = this.#handleFilterChange;
 
     if (!prevFilterComponent) {
-      render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREEND);
+      render(this.#mainElement, this.#filterComponent, RenderPosition.BEFOREEND);
       return;
     }
 
@@ -43,8 +51,33 @@ export default class Filter {
     remove(prevFilterComponent);
   }
 
+  setPresenters(boardPresenter, statsPresenter) {
+    this.#boardPresenter = boardPresenter;
+    this.#statsPresenter = statsPresenter;
+  }
+
   #handleModelEvent = () => {
     this.init();
+  };
+
+  #handleMenuClick = (menuItem) => {
+    if (menuItem === this.#currentMenuItem) {
+      return;
+    }
+
+    this.#currentMenuItem = menuItem;
+
+    switch (menuItem) {
+      case MenuItem.FILMS:
+        this.#statsPresenter.destroy();
+        this.#boardPresenter.init();
+        break;
+      case MenuItem.STATS:
+        this.#boardPresenter.destroy();
+        this.#statsPresenter.init();
+        break;
+      default:
+    }
   };
 
   #handleFilterChange = (filterType) => {
