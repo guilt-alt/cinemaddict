@@ -6,6 +6,8 @@ import { MenuItem, FilterType, UpdateType } from '@utils/const.js';
 import filter from '@utils/filters.js';
 
 export default class Filter {
+  #isLoading = true;
+
   #mainElement = null;
 
   #filterComponent = null;
@@ -39,6 +41,7 @@ export default class Filter {
     const prevFilterComponent = this.#filterComponent;
 
     this.#filterComponent = new FiltersView(filters, this.#currentFilter);
+
     this.#filterComponent.menuClickHandler = this.#handleMenuClick;
     this.#filterComponent.filterChangeHandler = this.#handleFilterChange;
 
@@ -57,10 +60,15 @@ export default class Filter {
   }
 
   #handleModelEvent = () => {
+    this.#isLoading = false;
     this.init();
   };
 
   #handleMenuClick = (menuItem) => {
+    if (this.#isLoading) {
+      return;
+    }
+
     if (menuItem === this.#currentMenuItem) {
       return;
     }
@@ -81,6 +89,10 @@ export default class Filter {
   };
 
   #handleFilterChange = (filterType) => {
+    if (this.#isLoading) {
+      return;
+    }
+
     if (filterType === this.#currentFilter) {
       return;
     }

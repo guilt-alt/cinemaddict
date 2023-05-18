@@ -25,8 +25,8 @@ const getUserRank = (films) => {
 
 const getAllGenres = (films) => {
   const countedGenres = films
-    .reduce((allGenres, { filmDetails: { genres } }) => {
-      allGenres.push(...genres);
+    .reduce((allGenres, { filmDetails: { genre } }) => {
+      allGenres.push(...genre);
       return allGenres;
     }, [])
     .reduce((sum, el) => {
@@ -43,6 +43,26 @@ const getAllGenres = (films) => {
     topGenre,
   };
 };
+
+export const getDuration = (filmDuration) => {
+  const totalMinutes = dayjs.duration(filmDuration, 'minutes').as('minutes');
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  return `${hours}h ${minutes}m`;
+};
+
+export const capitalize = (text) => text[0].toUpperCase() + text.slice(1);
+
+export const getShortDescription = (description) => {
+  const shortDescription = description.length > 140 ? `${description.slice(0, 139)}...` : description;
+
+  return capitalize(shortDescription);
+};
+
+export const getReleaseYear = (release) => dayjs(release).$y;
+
+export const getReleaseDate = (release) => dayjs(release).format('DD MMM YYYY');
 
 const getTotalDuration = (films) => {
   const totalMinutes = films.reduce((sum, { filmDetails: { duration: filmDuration } }) => {

@@ -30,7 +30,7 @@ export default class Stats {
     this.#mainElement = mainElement;
     this.#filmsModel = filmsModel;
 
-    this.#getFilms();
+    // this.#getFilms();
   }
 
   init() {
