@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
-import { StatsFilterType, DateFormat } from '@utils/const.js';
+import isBetween from 'dayjs/plugin/isBetween';
+import { StatsFilterType, DateType } from '@utils/const.js';
+
+dayjs.extend(isBetween);
 
 const currentDate = dayjs();
 
@@ -31,14 +34,14 @@ export default {
     .filter(({ userDetails: { isWatched } }) => isWatched),
   [StatsFilterType.TODAY]: (films) => films
     .filter(({ userDetails: { isWatched, date } }) => isWatched && dayjs(date)
-      .isSame(currentDate, DateFormat.DAY)),
+      .isSame(currentDate, DateType.DAY)),
   [StatsFilterType.WEEK]: (films) => films
     .filter(({ userDetails: { isWatched, date } }) => isWatched && dayjs(date)
-      .isBetween(DateFormat.WEEK, currentDate)),
+      .isBetween(DateType.WEEK, currentDate)),
   [StatsFilterType.MONTH]: (films) => films
     .filter(({ userDetails: { isWatched, date } }) => isWatched && dayjs(date)
-      .isBetween(DateFormat.MONTH, currentDate)),
+      .isBetween(DateType.MONTH, currentDate)),
   [StatsFilterType.YEAR]: (films) => films
     .filter(({ userDetails: { isWatched, date } }) => isWatched && dayjs(date)
-      .isBetween(DateFormat.YEAR, currentDate)),
+      .isBetween(DateType.YEAR, currentDate)),
 };

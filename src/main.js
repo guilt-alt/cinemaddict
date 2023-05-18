@@ -1,24 +1,24 @@
 import UserProfileView from '@view/profile.js';
 import FilmCounterView from '@view/film-counter.js';
-import getFilmData from '@mocks/film.js';
 
-import { FILMS_COUNT } from '@utils/const.js';
 import { render, RenderPosition } from '@utils/render.js';
+import { AUTHORIZATION, END_POINT } from '@utils/const.js';
 
-import FiltersModel from '@model/filters.js';
 import FilmsModel from '@model/films.js';
+import FiltersModel from '@model/filters.js';
 
-import FilterPresenter from '@presenter/filter.js';
 import BoardPresenter from '@presenter/board.js';
 import StatsPresenter from '@presenter/stats.js';
+import FilterPresenter from '@presenter/filter.js';
+
+import Api from './js/api';
+
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const mainElement = document.querySelector('main');
-const films = new Array(FILMS_COUNT).fill().map(getFilmData) ?? [];
 
 const filtersModel = new FiltersModel();
-const filmsModel = new FilmsModel();
-
-filmsModel.films = films;
+const filmsModel = new FilmsModel(api);
 
 const renderHeader = () => {
   const headerElement = document.querySelector('.header');
@@ -38,7 +38,7 @@ const renderStats = () => {
   const footerStatsElement = document.querySelector('.footer__statistics');
   render(
     footerStatsElement,
-    new FilmCounterView(films.length),
+    new FilmCounterView(filmsModel.films.length),
     RenderPosition.BEFOREEND,
   );
 };

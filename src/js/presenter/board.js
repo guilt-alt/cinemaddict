@@ -4,6 +4,7 @@ import FilmListView from '@view/film-list.js';
 import FilmListRatedView from '@view/film-list-rated.js';
 import FilmListCommentedView from '@view/film-list-commented.js';
 import FilmListEmptyVeiw from '@view/film-list-empty.js';
+import FilmListLoadingVeiw from '@view/film-list-loading.js';
 import MoreButtonView from '@view/more-button.js';
 
 import FilmPresenter from '@presenter/film.js';
@@ -26,11 +27,15 @@ export default class Board {
 
   #filmListEmptyView = new FilmListEmptyVeiw();
 
+  #filmListLoadingVeiw = new FilmListLoadingVeiw();
+
   #moreButtonView = new MoreButtonView();
 
   #sortView = null;
 
   #mainElement = null;
+
+  #isLoading = true;
 
   #mode = null;
 
@@ -88,6 +93,11 @@ export default class Board {
   }
 
   #renderBoard({ renderFilmsExtra = true } = {}) {
+    if (this.#isLoading) {
+      this.#renderListLoading();
+      return;
+    }
+
     const films = this.#getFilms();
     const filmsCount = films.length;
 
@@ -113,14 +123,19 @@ export default class Board {
   #clearBoard(
     { resetRenderFilmsCount = false, resetSortType = false, resetFilmsExtra = false } = {},
   ) {
+    if (this.#isLoading) {
+      return;
+    }
+
     const filmsCount = this.#getFilms().length;
 
     this.#filmPresenter.forEach((film) => film.destroy());
     this.#filmPresenter.clear();
 
-    remove(this.#sortView);
-    remove(this.#filmListEmptyView);
-    remove(this.#moreButtonView);
+    if (this.#sortView) remove(this.#sortView);
+    if (this.#filmListLoadingVeiw) remove(this.#filmListLoadingVeiw);
+    if (this.#filmListEmptyView) remove(this.#filmListEmptyView);
+    if (this.#moreButtonView) remove(this.#moreButtonView);
 
     if (resetFilmsExtra) {
       this.#filmPresenterRated.forEach((film) => film.destroy());
@@ -167,6 +182,10 @@ export default class Board {
     render(this.#mainElement, this.#filmListEmptyView, RenderPosition.BEFOREEND);
   }
 
+  #renderListLoading() {
+    render(this.#mainElement, this.#filmListLoadingVeiw, RenderPosition.BEFOREEND);
+  }
+
   #renderFilm(container, film, presenter) {
     const filmPresenter = new FilmPresenter(this.#handleViewAction, this.#handleModeChange);
     filmPresenter.init(container, film);
@@ -193,6 +212,12 @@ export default class Board {
     mostCommented.forEach(
       (film) => this.#renderFilm(filmCommentedElement, film, this.#filmPresenterCommented),
     );
+  }
+
+  #updateInit() {
+    this.#isLoading = false;
+    remove(this.#filmListLoadingVeiw);
+    this.#renderBoard();
   }
 
   #updatePatch(data) {
@@ -272,6 +297,9 @@ export default class Board {
         break;
       case UpdateType.MAJOR:
         this.#updateMajor();
+        break;
+      case UpdateType.INIT:
+        this.#updateInit();
         break;
       default:
         throw new Error('Model event undefined');

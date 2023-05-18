@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
 
-dayjs.extend(isBetween);
+export const BAR_HEIGHT = 50;
+export const DEBOUNCE_TIMEOUT = 500;
 
-export const FILMS_COUNT = 22;
 export const EXTRA_FILMS_COUNT = 2;
 export const FILMS_COUNT_PER_STEP = 5;
 
-export const EMOTIONS = ['angry', 'puke', 'sleeping', 'smile'];
+export const AUTHORIZATION = 'Basic VkeZ31OVLyQdG9Bk';
+export const END_POINT = 'https://19.ecmascript.pages.academy/cinemaddict';
 
-export const BAR_HEIGHT = 50;
+export const EMOTIONS = ['angry', 'puke', 'sleeping', 'smile'];
 
 export const Mode = {
   OPEN: 'open',
@@ -39,6 +39,7 @@ export const UpdateType = {
   PATCH: 'patch',
   MINOR: 'minor',
   MAJOR: 'major',
+  INIT: 'init',
 };
 
 export const MenuItem = {
@@ -72,9 +73,21 @@ export const StatsFilterType = {
   YEAR: 'year',
 };
 
-export const DateFormat = {
+export const DateType = {
   DAY: 'day',
   WEEK: dayjs().subtract(7, 'day').toDate(),
   MONTH: dayjs().subtract(1, 'month').toDate(),
   YEAR: dayjs().subtract(1, 'year').toDate(),
+};
+
+export const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
+};
+
+export const SuccessStatusRange = {
+  MIN: 200,
+  MAX: 299,
 };
