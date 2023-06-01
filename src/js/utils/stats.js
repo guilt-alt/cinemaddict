@@ -1,10 +1,12 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { RankTitle, RankScore } from '@utils/const.js';
 
 dayjs.extend(duration);
+dayjs.extend(relativeTime);
 
-const getUserRank = (films) => {
+export const getUserRank = (films) => {
   const totalWatched = films
     .reduce((count, { userDetails: { isWatched } }) => count + Number(isWatched), 0);
 
@@ -63,6 +65,8 @@ export const getShortDescription = (description) => {
 export const getReleaseYear = (release) => dayjs(release).$y;
 
 export const getReleaseDate = (release) => dayjs(release).format('DD MMM YYYY');
+
+export const getHumanizedDate = (date) => dayjs(date).fromNow();
 
 const getTotalDuration = (films) => {
   const totalMinutes = films.reduce((sum, { filmDetails: { duration: filmDuration } }) => {

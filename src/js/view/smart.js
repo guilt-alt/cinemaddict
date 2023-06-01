@@ -3,17 +3,34 @@ import Abstract from '@view/abstract.js';
 export default class Smart extends Abstract {
   #data = {};
 
+  #state = {};
+
   #errorRestoreHandlers = 'Abstract method not implemented: restoreHandlers';
 
-  updateData(update, justDataUpdating) {
+  get state() {
+    return this.#state;
+  }
+
+  get newComment() {
+    return this.#data;
+  }
+
+  updateData(update, justDataUpdating, isState = false) {
     if (!update) {
       return;
     }
 
-    this.#data = {
-      ...this.#data,
-      update,
-    };
+    if (isState === true) {
+      this.#state = {
+        ...this.#state,
+        ...update,
+      };
+    } else {
+      this.#data = {
+        ...this.#data,
+        ...update,
+      };
+    }
 
     if (justDataUpdating) {
       return;

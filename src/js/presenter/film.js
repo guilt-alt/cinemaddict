@@ -1,7 +1,9 @@
 import FilmCardView from '@view/film-card.js';
-import FilmDetailsView from '@view/film-details.js';
+import DetailsView from '@view/film-details.js';
 
-import { UserAction, UpdateType, Mode } from '@utils/const.js';
+import {
+  UserAction, UpdateType, Mode, FilmState,
+} from '@utils/const.js';
 import {
   render, RenderPosition, replace, remove,
 } from '@utils/render.js';
@@ -9,15 +11,21 @@ import {
 export default class Film {
   #film = null;
 
+  #comments = [];
+
+  #container = null;
+
   #filmComponent = null;
 
-  #filmDetails = null;
+  #detailsComponent = null;
 
   #changeData = null;
 
   #changeMode = null;
 
   #mode = Mode.CLOSE;
+
+  #scroll = 0;
 
   constructor(changeData, changeMode) {
     this.#changeData = changeData;
@@ -26,55 +34,95 @@ export default class Film {
 
   init(container, film) {
     this.#film = film;
+    this.#container = container;
 
-    this.#filmComponent = new FilmCardView(film);
-    render(container, this.#filmComponent, RenderPosition.BEFOREEND);
+    this.#renderFilm();
+  }
 
+  update(data) {
+    this.#film = data.film;
+    this.#comments = data.comments ?? this.#comments;
+
+    this.#updateFilm();
+    this.#updateDetails();
+  }
+
+  setViewState(state, id) {
+    const resetState = () => {
+      this.#detailsComponent.updateData({
+        isSaving: false,
+        isDeleting: false,
+      }, false, true);
+    };
+
+    switch (state) {
+      case FilmState.SAVING:
+        this.#detailsComponent.updateData(
+          { isSaving: true },
+          false,
+          true,
+        );
+        break;
+      case FilmState.DELETING:
+        this.#detailsComponent.updateData(
+          { isDeleting: id },
+          false,
+          true,
+        );
+        break;
+      case FilmState.ABORTING:
+        this.#filmComponent?.shake();
+        this.#detailsComponent?.shake(resetState);
+        break;
+      default:
+        throw new Error('State is undefined');
+    }
+  }
+
+  #renderFilm() {
+    this.#filmComponent = new FilmCardView(this.#film);
     this.#setFilmHandlers();
+
+    render(this.#container, this.#filmComponent, RenderPosition.BEFOREEND);
   }
 
-  update(film) {
-    this.#film = film;
+  #renderDetails() {
+    this.#detailsComponent = new DetailsView(this.#film, this.#comments);
+    this.#setDetailsHandlers();
 
-    this.#updateFilm(film);
-    this.#updateFilmDetails(film);
+    render(document.body, this.#detailsComponent, RenderPosition.BEFOREEND);
   }
 
-  #updateFilm(film) {
+  #updateFilm() {
     const prevFilmComponent = this.#filmComponent;
 
-    this.#filmComponent = new FilmCardView(film);
+    this.#filmComponent = new FilmCardView(this.#film);
     this.#setFilmHandlers();
 
     replace(this.#filmComponent, prevFilmComponent);
     remove(prevFilmComponent);
   }
 
-  #renderFilmDetails() {
-    this.#filmDetails = new FilmDetailsView(this.#film);
-    render(document.body, this.#filmDetails, RenderPosition.BEFOREEND);
-    this.#setFilmDetailsHandlers();
-  }
-
-  #removeFilmDetails() {
-    this.#filmDetails.removeDocumentHandler();
-    remove(this.#filmDetails);
-    this.#filmDetails = null;
-  }
-
-  #updateFilmDetails(film) {
-    const prevFilmDetails = this.#filmDetails;
-
-    if (prevFilmDetails) {
-      this.#mode = Mode.OPEN;
-
-      this.#filmDetails = new FilmDetailsView(film);
-      this.#setFilmDetailsHandlers();
-
-      prevFilmDetails.removeDocumentHandler();
-      replace(this.#filmDetails, prevFilmDetails);
-      remove(prevFilmDetails);
+  #updateDetails() {
+    if (!this.#detailsComponent) {
+      return;
     }
+
+    const prevDetailsComponent = this.#detailsComponent;
+    prevDetailsComponent.removeDocumentHandlers();
+
+    this.#detailsComponent = new DetailsView(this.#film, this.#comments);
+    this.#setDetailsHandlers();
+
+    replace(this.#detailsComponent, prevDetailsComponent);
+    this.#detailsComponent.setScrollPosition(this.#scroll);
+    remove(prevDetailsComponent);
+  }
+
+  #removeDetailsComponent() {
+    this.#detailsComponent.removeDocumentHandlers();
+    remove(this.#detailsComponent);
+    this.#detailsComponent = null;
   }
 
   #setFilmHandlers() {
@@ -84,12 +132,19 @@ export default class Film {
     this.#filmComponent.openDetailsHandler = this.#handleDetailsOpen;
   }
 
-  #setFilmDetailsHandlers() {
-    this.#filmDetails.clickWatchlistHandler = this.#handleWatchlistClick;
-    this.#filmDetails.clickWatchedHandler = this.#handleWatchedClick;
-    this.#filmDetails.clickFavoriteHandler = this.#handleFavotiteClick;
-    this.#filmDetails.closeDetailsHandler = this.#handleDetailsClose;
+  #setDetailsHandlers() {
+    this.#detailsComponent.scrollPositionHandler = this.#handlePositionScroll;
+    this.#detailsComponent.clickWatchlistHandler = this.#handleWatchlistClick;
+    this.#detailsComponent.clickWatchedHandler = this.#handleWatchedClick;
+    this.#detailsComponent.clickFavoriteHandler = this.#handleFavotiteClick;
+    this.#detailsComponent.closeDetailsHandler = this.#handleDetailsClose;
+    this.#detailsComponent.addCommentHandler = this.#handleCommentAdd;
+    this.#detailsComponent.deleteCommentHandler = this.#handleCommentDelete;
   }
+
+  #handlePositionScroll = (scroll) => {
+    this.#scroll = scroll;
+  };
 
   #handleWatchlistClick = () => {
     this.#changeData(
@@ -133,22 +188,52 @@ export default class Film {
     );
   };
 
+  #handleCommentAdd = (comment) => {
+    this.#changeData(
+      UserAction.ADD_COMMENT,
+      UpdateType.PATCH,
+      comment,
+    );
+  };
+
+  #handleCommentDelete = (data) => {
+    this.#changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      {
+        film: {
+          ...this.#film,
+          comments: this.#film.comments.filter((id) => id !== data.delete),
+        },
+        comments: data.comments,
+        delete: data.delete,
+      },
+    );
+  };
+
   #handleDetailsOpen = () => {
     if (this.#changeMode() === Mode.OPEN) {
       return;
     }
 
     this.#mode = Mode.OPEN;
-    this.#renderFilmDetails();
-    this.#changeMode(this.#mode);
+    this.#renderDetails();
+    this.#changeData(
+      UserAction.OPEN_POPUP,
+      UpdateType.PATCH,
+      {
+        ...this.#film,
+      },
+    );
 
     document.body.classList.add('hide-overflow');
   };
 
   #handleDetailsClose = () => {
+    this.#scroll = 0;
     this.#mode = Mode.CLOSE;
-    this.#removeFilmDetails();
     this.#changeMode(this.#mode);
+    this.#removeDetailsComponent();
 
     document.body.classList.remove('hide-overflow');
   };

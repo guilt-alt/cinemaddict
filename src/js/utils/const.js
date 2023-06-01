@@ -1,6 +1,7 @@
 import dayjs from 'dayjs';
 
 export const BAR_HEIGHT = 50;
+export const SHAKE_TIMEOUT = 600;
 export const DEBOUNCE_TIMEOUT = 500;
 
 export const EXTRA_FILMS_COUNT = 2;
@@ -16,6 +17,12 @@ export const Mode = {
   CLOSE: 'close',
 };
 
+export const FilmState = {
+  SAVING: 'saving',
+  DELETING: 'deleting',
+  ABORTING: 'aborting',
+};
+
 export const FilterType = {
   ALL: 'all',
   WATCHLIST: 'watchlist',
@@ -24,22 +31,24 @@ export const FilterType = {
 };
 
 export const SortType = {
-  DEFAULT: 'default',
   DATE: 'date',
   RATING: 'rating',
+  DEFAULT: 'default',
 };
 
 export const UserAction = {
+  OPEN_POPUP: 'open_popup',
   UPDATE_FILM: 'update_film',
   ADD_COMMENT: 'add_comment',
   DELETE_COMMENT: 'delete_comment',
 };
 
 export const UpdateType = {
+  INIT: 'init',
   PATCH: 'patch',
   MINOR: 'minor',
   MAJOR: 'major',
-  INIT: 'init',
+  REJECT: 'reject',
 };
 
 export const MenuItem = {
@@ -60,8 +69,8 @@ export const RankScore = {
 
 export const RankTitle = {
   NONE: '',
-  NOVICE: 'Novice',
   FAN: 'Fan',
+  NOVICE: 'Novice',
   MOVIE_BUFF: 'Movie Buff',
 };
 

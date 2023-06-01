@@ -2,7 +2,7 @@ import Abstract from '@view/abstract.js';
 
 const createFilmCounter = (count) => `<p>${count} movies inside</p>`;
 
-export default class FilmCounterView extends Abstract {
+export default class FilmCounter extends Abstract {
   #data = null;
 
   constructor(data) {

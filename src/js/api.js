@@ -11,21 +11,52 @@ export default class Api {
     this.#authorization = authorization;
   }
 
-  getFilms() {
-    return this.#load({ url: 'movies' })
-      .then(Api.toJSON)
-      .then((films) => films.map(FilmsModel.adaptToClient));
+  async getFilms() {
+    const response = await this.#load({ url: 'movies' });
+    const films = await Api.toJSON(response);
+
+    return films.map(FilmsModel.adaptFilmToClient);
   }
 
-  updateFilm(film) {
-    return this.#load({
+  async updateFilm(film) {
+    const response = await this.#load({
       url: `movies/${film.id}`,
       method: Method.PUT,
-      body: JSON.stringify(FilmsModel.adaptToServer(film)),
+      body: JSON.stringify(FilmsModel.adaptFilmToServer(film)),
       headers: new Headers({ 'Content-Type': 'application/json' }),
-    })
-      .then(Api.toJSON)
-      .then(FilmsModel.adaptToClient);
+    });
+    const updatedFilm = await Api.toJSON(response);
+
+    return FilmsModel.adaptFilmToClient(updatedFilm);
+  }
+
+  async getComments(id) {
+    const response = await this.#load({ url: `comments/${id}` });
+    const comments = await Api.toJSON(response);
+
+    return comments.map(FilmsModel.adaptCommentToClient);
+  }
+
+  async addComment(comment) {
+    const response = await this.#load({
+      url: `comments/${comment.id}`,
+      method: Method.POST,
+      body: JSON.stringify(FilmsModel.adaptCommentToServer(comment)),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    });
+    const newComment = await Api.toJSON(response);
+
+    return {
+      film: FilmsModel.adaptFilmToClient(newComment.movie),
+      comments: newComment.comments.map((FilmsModel.adaptCommentToClient)),
+    };
+  }
+
+  async deleteComment(id) {
+    await this.#load({
+      url: `comments/${id}`,
+      method: Method.DELETE,
+    });
   }
 
   async #load({
