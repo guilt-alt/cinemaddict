@@ -1,3 +1,5 @@
+import { SHAKE_TIMEOUT } from '@utils/const.js';
+
 export default class Abstract {
   #element = null;
 
@@ -27,6 +29,17 @@ export default class Abstract {
 
   removeElement() {
     this.#element = null;
+  }
+
+  shake(callback) {
+    this.getElement().style.animation = `shake ${SHAKE_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      this.getElement().style.animation = '';
+
+      if (callback) {
+        callback();
+      }
+    }, SHAKE_TIMEOUT);
   }
 
   #createElement(template) {

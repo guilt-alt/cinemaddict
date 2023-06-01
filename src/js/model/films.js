@@ -6,6 +6,8 @@ export default class Films extends Observer {
 
   #films = [];
 
+  #comments = [];
+
   constructor(api) {
     super();
     this.#api = api;
@@ -19,11 +21,13 @@ export default class Films extends Observer {
 
   async #setFilms() {
     try {
-      this.#films = await this.#api.getFilms();
-      this.#films.slice();
+      const films = await this.#api.getFilms();
+      this.#films = films.slice();
+
       this.notify(UpdateType.INIT);
     } catch (err) {
       this.#films = [];
+
       this.notify(UpdateType.INIT);
     }
   }
@@ -44,13 +48,65 @@ export default class Films extends Observer {
         ...this.#films.slice(index + 1),
       ];
 
-      this.notify(updateType, update);
+      this.notify(updateType, { film });
     } catch (err) {
-      this.films = this.#films;
+      this.notify(UpdateType.REJECT, { id: update.id });
     }
   }
 
-  static adaptToClient(film) {
+  async getComments(updateType, film) {
+    try {
+      const comments = await this.#api.getComments(film.id);
+      this.#comments = comments.slice();
+
+      this.notify(updateType, { film, comments: this.#comments });
+    } catch (err) {
+      this.#comments = [];
+
+      this.notify(updateType, { film, comments: this.#comments });
+    }
+  }
+
+  async addComment(updateType, update) {
+    try {
+      const data = await this.#api.addComment(update);
+
+      this.notify(updateType, data);
+    } catch (err) {
+      this.notify(UpdateType.REJECT, { id: update.id });
+    }
+  }
+
+  async deleteComment(updateType, update) {
+    const filmIndex = this.#films.findIndex((film) => film.id === update.film.id);
+    const commentIndex = update.comments.findIndex((comment) => comment.id === update.delete);
+
+    if (filmIndex === -1 || commentIndex === -1) {
+      throw new Error('Can\'t update unexisting film');
+    }
+
+    try {
+      await this.#api.deleteComment(update.delete);
+      const film = await this.#api.updateFilm(update.film);
+
+      this.#films = [
+        ...this.#films.slice(0, filmIndex),
+        film,
+        ...this.#films.slice(filmIndex + 1),
+      ];
+
+      const comments = [
+        ...update.comments.slice(0, commentIndex),
+        ...update.comments.slice(commentIndex + 1),
+      ];
+
+      this.notify(updateType, { film, comments });
+    } catch (err) {
+      this.notify(UpdateType.REJECT, { id: update.film.id });
+    }
+  }
+
+  static adaptFilmToClient(film) {
     const adaptedFilm = {
       ...film,
       filmDetails: {
@@ -84,7 +140,7 @@ export default class Films extends Observer {
     return adaptedFilm;
   }
 
-  static adaptToServer(film) {
+  static adaptFilmToServer(film) {
     const adaptedFilm = {
       ...film,
       film_info: {
@@ -119,5 +175,26 @@ export default class Films extends Observer {
     delete adaptedFilm.user_details.date;
 
     return adaptedFilm;
+  }
+
+  static adaptCommentToClient(comment) {
+    const adaptedComment = {
+      ...comment,
+      text: comment.comment,
+    };
+
+    delete adaptedComment.comment;
+
+    return adaptedComment;
+  }
+
+  static adaptCommentToServer(comment) {
+    const adaptedComment = {
+      ...comment,
+    };
+
+    delete adaptedComment.id;
+
+    return adaptedComment;
   }
 }

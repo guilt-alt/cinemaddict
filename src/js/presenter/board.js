@@ -1,3 +1,4 @@
+import UserRankView from '@view/profile.js';
 import SortView from '@view/sort.js';
 
 import FilmListView from '@view/film-list.js';
@@ -7,15 +8,16 @@ import FilmListEmptyVeiw from '@view/film-list-empty.js';
 import FilmListLoadingVeiw from '@view/film-list-loading.js';
 import MoreButtonView from '@view/more-button.js';
 
+import FilmCounterView from '@view/film-counter.js';
+
 import FilmPresenter from '@presenter/film.js';
 
 import filter from '@utils/filters.js';
 import {
   FILMS_COUNT_PER_STEP, EXTRA_FILMS_COUNT,
-  SortType, FilterType, UpdateType, UserAction,
+  SortType, FilterType, UpdateType, UserAction, FilmState, Mode,
 } from '@utils/const.js';
 import { render, RenderPosition, remove } from '@utils/render.js';
-
 import { sortByDate, sortByRating, sortByComments } from '@utils/sort.js';
 
 export default class Board {
@@ -31,13 +33,21 @@ export default class Board {
 
   #moreButtonView = new MoreButtonView();
 
+  #userRankView = null;
+
   #sortView = null;
+
+  #filmCounterView = null;
+
+  #headerElement = null;
 
   #mainElement = null;
 
+  #footerElement = null;
+
   #isLoading = true;
 
-  #mode = null;
+  #mode = Mode.CLOSE;
 
   #filmsModel = null;
 
@@ -53,8 +63,11 @@ export default class Board {
 
   #renderFilmsCount = FILMS_COUNT_PER_STEP;
 
-  constructor(mainElement, filtersModel, filmsModel) {
-    this.#mainElement = mainElement;
+  constructor(container, filtersModel, filmsModel) {
+    this.#headerElement = container.header;
+    this.#mainElement = container.main;
+    this.#footerElement = container.footer;
+
     this.#filmsModel = filmsModel;
     this.#filtersModel = filtersModel;
   }
@@ -100,6 +113,10 @@ export default class Board {
 
     const films = this.#getFilms();
     const filmsCount = films.length;
+    const filmsOrigin = this.#filmsModel.films;
+
+    this.#renderUserRank(filmsOrigin);
+    this.#renderFilmsCounter(filmsOrigin.length);
 
     if (!filmsCount) {
       this.#renderListEmpty();
@@ -132,10 +149,12 @@ export default class Board {
     this.#filmPresenter.forEach((film) => film.destroy());
     this.#filmPresenter.clear();
 
+    if (this.#userRankView) remove(this.#userRankView);
     if (this.#sortView) remove(this.#sortView);
     if (this.#filmListLoadingVeiw) remove(this.#filmListLoadingVeiw);
     if (this.#filmListEmptyView) remove(this.#filmListEmptyView);
     if (this.#moreButtonView) remove(this.#moreButtonView);
+    if (this.#filmCounterView) remove(this.#filmCounterView);
 
     if (resetFilmsExtra) {
       this.#filmPresenterRated.forEach((film) => film.destroy());
@@ -156,6 +175,12 @@ export default class Board {
     if (resetSortType) {
       this.#currentSortType = SortType.DEFAULT;
     }
+  }
+
+  #renderUserRank(films) {
+    this.#userRankView = new UserRankView(films);
+
+    render(this.#headerElement, this.#userRankView, RenderPosition.BEFOREEND);
   }
 
   #renderSort() {
@@ -214,38 +239,17 @@ export default class Board {
     );
   }
 
-  #updateInit() {
-    this.#isLoading = false;
-    remove(this.#filmListLoadingVeiw);
-    this.#renderBoard();
-  }
-
-  #updatePatch(data) {
-    this.#filmPresenter.get(data.id)?.update(data);
-    this.#filmPresenterRated.get(data.id)?.update(data);
-    this.#filmPresenterCommented.get(data.id)?.update(data);
-  }
-
-  #updateMinor(data) {
-    if (this.#filtersModel.filter === FilterType.ALL) {
-      this.#handleModelEvent(UpdateType.PATCH, data);
-      return;
-    }
-
-    this.#clearBoard({ resetFilmsExtra: true });
-    this.#renderBoard();
-  }
-
-  #updateMajor() {
-    this.#clearBoard({ resetRenderFilmsCount: true, resetSortType: true, resetFilmsExtra: true });
-    this.#renderBoard();
-  }
-
   #renderMoreButton() {
     const filmList = document.querySelector('.films-list');
 
     render(filmList, this.#moreButtonView, RenderPosition.BEFOREEND);
     this.#moreButtonView.setClickHandler(this.#handleMoreButtonClick);
+  }
+
+  #renderFilmsCounter(count) {
+    this.#filmCounterView = new FilmCounterView(count);
+
+    render(this.#footerElement, this.#filmCounterView, RenderPosition.BEFOREEND);
   }
 
   #handleMoreButtonClick = () => {
@@ -276,10 +280,28 @@ export default class Board {
       case UserAction.UPDATE_FILM:
         this.#filmsModel.updateFilm(updateType, update);
         break;
+      case UserAction.OPEN_POPUP:
+        this.#mode = Mode.OPEN;
+        this.#filmsModel.getComments(updateType, update);
+        break;
       case UserAction.ADD_COMMENT:
+        this.#filmPresenter.get(update.id)
+          ?.setViewState(FilmState.SAVING);
+        this.#filmPresenterRated.get(update.id)
+          ?.setViewState(FilmState.SAVING);
+        this.#filmPresenterCommented.get(update.id)
+          ?.setViewState(FilmState.SAVING);
+
         this.#filmsModel.addComment(updateType, update);
         break;
       case UserAction.DELETE_COMMENT:
+        this.#filmPresenter.get(update.film.id)
+          ?.setViewState(FilmState.DELETING, update.delete);
+        this.#filmPresenterRated.get(update.film.id)
+          ?.setViewState(FilmState.DELETING, update.delete);
+        this.#filmPresenterCommented.get(update.film.id)
+          ?.setViewState(FilmState.DELETING, update.delete);
+
         this.#filmsModel.deleteComment(updateType, update);
         break;
       default:
@@ -289,25 +311,45 @@ export default class Board {
 
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#filmListLoadingVeiw);
+        this.#renderBoard();
+        break;
       case UpdateType.PATCH:
-        this.#updatePatch(data);
+        this.#filmPresenter.get(data.film.id)?.update(data);
+        this.#filmPresenterRated.get(data.film.id)?.update(data);
+        this.#filmPresenterCommented.get(data.film.id)?.update(data);
         break;
       case UpdateType.MINOR:
-        this.#updateMinor(data);
+        if (this.#mode === Mode.OPEN) {
+          this.#handleModelEvent(UpdateType.PATCH, data);
+          return;
+        }
+
+        this.#clearBoard({ resetFilmsExtra: true });
+        this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#updateMajor();
+        this.#clearBoard({
+          resetSortType: true,
+          resetFilmsExtra: true,
+          resetRenderFilmsCount: true,
+        });
+        this.#renderBoard();
         break;
-      case UpdateType.INIT:
-        this.#updateInit();
+      case UpdateType.REJECT:
+        this.#filmPresenter.get(data.id)?.setViewState(FilmState.ABORTING);
+        this.#filmPresenterRated.get(data.id)?.setViewState(FilmState.ABORTING);
+        this.#filmPresenterCommented.get(data.id)?.setViewState(FilmState.ABORTING);
         break;
       default:
         throw new Error('Model event undefined');
     }
   };
 
-  #handleModeChange = (mode = this.#mode) => {
-    this.#mode = mode;
+  #handleModeChange = (mode) => {
+    this.#mode = mode ?? this.#mode;
     return this.#mode;
   };
 }
