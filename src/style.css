@@ -27,3 +27,26 @@
 .shake {
   animation: shake 0.6s;
 }
+
+.toast-container {
+  position: fixed;
+  z-index: 999;
+  top: 50px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+
+.toast-item {
+  padding: 15px;
+
+  background-color: #fee;
+  color: #900;
+}
