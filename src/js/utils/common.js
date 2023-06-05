@@ -4,9 +4,13 @@ export const onEscKeyDown = (evt) => (evt.key === 'Escape' || evt.key === 'Esc')
 
 export const onCtrlEnterKeyDown = (evt) => (evt.ctrlKey && evt.key === 'Enter');
 
-export function debounce(cb, timeoutMs = DEBOUNCE_TIMEOUT) {
-  return function perform(evt, ...args) {
-    evt.preventDefault();
+export function debounce(cb, isCheck = false, timeoutMs = DEBOUNCE_TIMEOUT) {
+  return function perform(...args) {
+    if (isCheck) {
+      const [evt] = args;
+      evt.preventDefault();
+    }
+
     const prevCall = this.lastCall;
     this.lastCall = Date.now();
 
@@ -26,3 +30,5 @@ export const shake = (element) => {
     style.animation = '';
   }, 600);
 };
+
+export const isOnline = () => window.navigator.onLine;

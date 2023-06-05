@@ -1,7 +1,10 @@
 import he from 'he';
 import Smart from '@view/smart.js';
+import toast from '@utils/toast.js';
 import { EMOTIONS } from '@utils/const.js';
-import { onCtrlEnterKeyDown, onEscKeyDown, debounce } from '@utils/common.js';
+import {
+  onCtrlEnterKeyDown, onEscKeyDown, debounce, isOnline,
+} from '@utils/common.js';
 import {
   getHumanizedDate, getReleaseDate, getDuration, capitalize,
 } from '@utils/stats.js';
@@ -20,7 +23,7 @@ const createComments = (comments, isDeleting) => comments.map(({
           <span class="film-details__comment-author">${author}</span>
           <span class="film-details__comment-day">${getHumanizedDate(date)}</span>
           <button class="film-details__comment-delete"
-            data-id="${id}" type="button" ${isDeleting === id ? 'disabled' : ''}>
+            data-id="${id}" type="button" ${isDeleting ? 'disabled' : ''}>
             ${isDeleting === id ? 'Deleting...' : 'Delete'}
           </button>
         </p>
@@ -232,14 +235,15 @@ export default class DetailsView extends Smart {
 
   set clickWatchlistHandler(callback) {
     this.callback.watchlist = callback;
-    const debouncedHandle = debounce(this.#clickWatchlistHandler);
+    const debouncedHandle = debounce(this.#clickWatchlistHandler, true);
 
     this.getElement()
       .querySelector('.film-details__control-label--watchlist')
       .addEventListener('click', debouncedHandle);
   }
 
-  #clickWatchlistHandler = () => {
+  #clickWatchlistHandler = (evt) => {
+    evt.preventDefault();
     this.callback.watchlist();
   };
 
@@ -252,7 +256,8 @@ export default class DetailsView extends Smart {
       .addEventListener('click', debouncedHandle);
   }
 
-  #clickWatchedHandler = () => {
+  #clickWatchedHandler = (evt) => {
+    evt.preventDefault();
     this.callback.watched();
   };
 
@@ -265,18 +270,25 @@ export default class DetailsView extends Smart {
       .addEventListener('click', debouncedHandle);
   }
 
-  #clickFavoriteHandler = () => {
+  #clickFavoriteHandler = (evt) => {
+    evt.preventDefault();
     this.callback.favorite();
   };
 
   set addCommentHandler(callback) {
     this.callback.add = callback;
+    const debouncedHandle = debounce(this.#addCommentHandler);
 
-    document.addEventListener('keydown', this.#addCommentHandler);
+    document.addEventListener('keydown', debouncedHandle);
   }
 
   #addCommentHandler = (evt) => {
     if (onCtrlEnterKeyDown(evt)) {
+      if (!isOnline()) {
+        toast('You can\'t send comment offline');
+        return;
+      }
+
       evt.preventDefault();
 
       if (!this.newComment.emotion || !this.newComment.comment) {
@@ -291,12 +303,18 @@ export default class DetailsView extends Smart {
 
   set deleteCommentHandler(callback) {
     this.callback.delete = callback;
+    const debouncedHandle = debounce(this.#deleteCommentHandler);
 
-    this.getElement().addEventListener('click', this.#deleteCommentHandler);
+    this.getElement().addEventListener('click', debouncedHandle);
   }
 
   #deleteCommentHandler = (evt) => {
     if (!evt.target.matches('.film-details__comment-delete')) {
+      return;
+    }
+
+    if (!isOnline()) {
+      toast('You can\' delete comment offline');
       return;
     }
 

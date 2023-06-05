@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
 
-export const BAR_HEIGHT = 50;
+export const SHOW_TIME = 5000;
 export const SHAKE_TIMEOUT = 600;
+
+export const BAR_HEIGHT = 50;
 export const DEBOUNCE_TIMEOUT = 500;
 
 export const EXTRA_FILMS_COUNT = 2;
@@ -9,6 +11,10 @@ export const FILMS_COUNT_PER_STEP = 5;
 
 export const AUTHORIZATION = 'Basic VkeZ31OVLyQdG9Bk';
 export const END_POINT = 'https://19.ecmascript.pages.academy/cinemaddict';
+
+export const STORE_PREFIX = 'cinemaddict-localstorage';
+export const STORE_VER = 'v1';
+export const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 export const EMOTIONS = ['angry', 'puke', 'sleeping', 'smile'];
 

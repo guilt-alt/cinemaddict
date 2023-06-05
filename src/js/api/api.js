@@ -59,6 +59,17 @@ export default class Api {
     });
   }
 
+  async sync(data) {
+    const response = await this.#load({
+      url: 'movies/sync',
+      method: Method.POST,
+      body: JSON.stringify(data),
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+    });
+
+    return Api.toJSON(response);
+  }
+
   async #load({
     url,
     method = Method.GET,

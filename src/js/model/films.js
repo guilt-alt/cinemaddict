@@ -8,9 +8,9 @@ export default class Films extends Observer {
 
   #comments = [];
 
-  constructor(api) {
+  constructor(provider) {
     super();
-    this.#api = api;
+    this.#api = provider;
 
     this.#setFilms();
   }
