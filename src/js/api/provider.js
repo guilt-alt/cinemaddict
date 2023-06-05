@@ -9,6 +9,7 @@ const createStoreStructure = (items) => items
 
 export default class Provider {
   #api = null;
+
   #store = null;
 
   constructor(api, store) {
@@ -33,7 +34,9 @@ export default class Provider {
 
   async getComments(id) {
     if (isOnline()) {
-      return await this.#api.getComments(id);
+      const comments = await this.#api.getComments(id);
+
+      return comments;
     }
 
     return Promise.reject(new Error('Can\'t get comments offline'));
@@ -41,7 +44,7 @@ export default class Provider {
 
   async updateFilm(film) {
     if (isOnline()) {
-      const updatedFilm = await this.#api.updateFilm(film)
+      const updatedFilm = await this.#api.updateFilm(film);
       this.#store.setItem(updatedFilm.id, FilmsModel.adaptFilmToServer(updatedFilm));
 
       return updatedFilm;
@@ -66,10 +69,12 @@ export default class Provider {
   async deleteComment(id) {
     if (isOnline()) {
       await this.#api.deleteComment(id);
-      return this.#store.removeItem = id;
+      this.#store.removeItem = id;
+
+      return;
     }
 
-    return Promise.reject(new Error('Delete comment failed'));
+    Promise.reject(new Error('Delete comment failed'));
   }
 
   async sync() {
@@ -85,6 +90,6 @@ export default class Provider {
       return;
     }
 
-    return Promise.reject(new Error('Sync data failed'));
+    Promise.reject(new Error('Sync data failed'));
   }
 }

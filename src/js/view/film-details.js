@@ -2,7 +2,9 @@ import he from 'he';
 import Smart from '@view/smart.js';
 import toast from '@utils/toast.js';
 import { EMOTIONS } from '@utils/const.js';
-import { onCtrlEnterKeyDown, onEscKeyDown, debounce, isOnline } from '@utils/common.js';
+import {
+  onCtrlEnterKeyDown, onEscKeyDown, debounce, isOnline,
+} from '@utils/common.js';
 import {
   getHumanizedDate, getReleaseDate, getDuration, capitalize,
 } from '@utils/stats.js';
@@ -281,9 +283,7 @@ export default class DetailsView extends Smart {
   }
 
   #addCommentHandler = (evt) => {
-
     if (onCtrlEnterKeyDown(evt)) {
-
       if (!isOnline()) {
         toast('You can\'t send comment offline');
         return;

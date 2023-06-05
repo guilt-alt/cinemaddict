@@ -64,7 +64,7 @@ export default class Api {
       url: 'movies/sync',
       method: Method.POST,
       body: JSON.stringify(data),
-      headers: new Headers({ 'Content-Type': 'application/json' })
+      headers: new Headers({ 'Content-Type': 'application/json' }),
     });
 
     return Api.toJSON(response);

@@ -13,5 +13,5 @@ export default (message) => {
 
   setTimeout(() => {
     toastItem.remove();
-  }, SHOW_TIME)
-}
+  }, SHOW_TIME);
+};

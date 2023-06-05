@@ -43,6 +43,6 @@ window.addEventListener('offline', () => {
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register(
-    import.meta.env.MODE === 'production' ? '/cinemaddict/sw.js' : '/dev-sw.js?dev-sw'
-  )
+    import.meta.env.MODE === 'production' ? '/cinemaddict/sw.js' : '/dev-sw.js?dev-sw',
+  );
 }

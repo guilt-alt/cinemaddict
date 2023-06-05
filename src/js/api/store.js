@@ -1,5 +1,6 @@
 export default class Store {
   #storage = null;
+
   #key = null;
 
   constructor(key, storage) {
@@ -18,7 +19,7 @@ export default class Store {
   set items(items) {
     this.#storage.setItem(
       this.#key,
-      JSON.stringify(items)
+      JSON.stringify(items),
     );
   }
 
@@ -29,8 +30,8 @@ export default class Store {
       this.#key,
       JSON.stringify({
         ...store,
-        ...{ [key]: value }
-      })
+        ...{ [key]: value },
+      }),
     );
   }
 
@@ -41,7 +42,7 @@ export default class Store {
 
     this.#storage.setItem(
       this.#key,
-      JSON.stringify(store)
+      JSON.stringify(store),
     );
   }
 }
